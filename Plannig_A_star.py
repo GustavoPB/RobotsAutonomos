@@ -87,15 +87,17 @@ class Algorithm(object):
             if node.Equals(posTargetNode):
                 result = True
                 foundNode = node
+                break
             else:
                 result = False
         return result, foundNode
     
     def isNodeInClosedList(self, posTargetNode):
         result = False
-        for node in self.openList:
+        for node in self.closedList:
             if node.Equals(posTargetNode):
                 result = True
+                break
             else:
                 result = False
         return result
@@ -115,7 +117,7 @@ class Algorithm(object):
             if check == True:
                 node.setParent(fromNode)
                 self.UpdateNodeInOpenList(node)
-            elif self.isNodeInClosedList(fromNode):
+            elif self.isNodeInClosedList(neighbour):
                 #Ignorar Nodo, no hacer nada
                 continue
             else:
@@ -173,16 +175,17 @@ for node in alg.closedList:
 
 print '-------'
 
-punto = Possition(10,10)
+punto = Possition(5,6)
 
-newNode = Node(10,10, 0,0)
+newNode = Node(5,6, 0,0)
 alg.openList.append(newNode)
 
 alg.Explore(punto)
 for node in alg.openList:
-    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed)
+    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y)
 for node in alg.closedList:
-    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed)
+    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y)
+
 
 
 
