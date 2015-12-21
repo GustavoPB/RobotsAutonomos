@@ -128,6 +128,15 @@ class Algorithm(object):
                 newNode.setFitness()
                 self.openList.append(newNode)
 
+    def getBestNodeFromOpenList(self):
+        bestNode = Node(0,0,0,0)
+        bestNode.fitness = 50000000
+        for node in self.openList:
+            if node.fitness < bestNode.fitness:
+                bestNode = node
+        return bestNode
+
+
 
 
 
@@ -182,10 +191,12 @@ alg.openList.append(newNode)
 
 alg.Explore(punto)
 for node in alg.openList:
-    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y)
+    print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y) + ' --- ' + str(node.fitness)
 for node in alg.closedList:
     print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y)
 
+besNode = alg.getBestNodeFromOpenList()
+print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)
 
 
 
