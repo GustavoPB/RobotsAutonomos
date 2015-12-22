@@ -67,14 +67,16 @@ class Algorithm(object):
         self.openList = [] #almacenara los nodos explorados pendientes de eleccion
         self.map = cv.imread('crea3.jpg')
         self.PrintMap()
+        self.routing = True
     
     def PrintMap(self):
         cv.imshow("Window", self.map)
     
     def setStartingNode(self, node):
         self.startNode = node
-        node.Close()
-        self.closedList.append(node)
+        self.openList.append(node)
+        #node.Close()
+        #self.closedList.append(node)
     
     def setEndingNode(self, node):
         self.endNode = node
@@ -154,6 +156,8 @@ class Algorithm(object):
         for node in self.openList:
             if node.fitness < bestNode.fitness:
                 bestNode = node
+                if node.pos.x == self.endNode.pos.x and node.pos.y == self.endNode.pos.y: #condicion de parada
+                    self.routing = False
         return bestNode
 
 # ************* Metodos y propiedades globales
@@ -177,7 +181,7 @@ def CallBackFunc(event, x, y, flags, param):
 def DrawFilledCircle(image, center):
     cv.circle(image, (center.x, center.y), 3, ( 0, 0, 255 ), -1)
 
-
+"""
 #--------PRUEBAS UNITARIAS---------
 n = Node(5,5,0,0)
 
@@ -235,14 +239,31 @@ for node in alg.closedList:
     print str(node.pos.x) + ' ' + str(node.pos.y) + ' ' + str(node.isClosed) + ' Parent: ' + str(node.parentPos.x) + ' ' + str(node.parentPos.y)
 
 besNode = alg.getBestNodeFromOpenList()
-print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)
+print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)"""
 
+#Pruebas para seleccionar puntos por pantalla
+alg = Algorithm()
 cv.setMouseCallback("Window", CallBackFunc)
 cv.waitKey(0)
 print 'Drawing points of route'
 DrawFilledCircle(alg.map, mousePoints[0])
 DrawFilledCircle(alg.map, mousePoints[1])
 alg.PrintMap()
+sNode = Node(mousePoints[0].x, mousePoints[0].y,0,0)
+eNode = Node(mousePoints[1].x, mousePoints[1].y,0,0)
+
+alg.setStartingNode(sNode)
+alg.setEndingNode(eNode)
+fromN = mousePoints[0]
+
+while alg.routing:
+    alg.Explore(fromN)
+    best = alg.getBestNodeFromOpenList()
+    fromN.x = best.pos.x
+    fromN.y = best.pos.y
+
+print 'Finish'
+
 cv.waitKey(0)
 cv.destroyAllWindows()
 print 'Fin del programa'
