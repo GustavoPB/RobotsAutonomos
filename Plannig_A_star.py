@@ -1,6 +1,8 @@
 import cv2 as cv
 import numpy as np
 
+
+
 #Definicion de posicion
 class Possition(object):
 
@@ -154,8 +156,23 @@ class Algorithm(object):
                 bestNode = node
         return bestNode
 
+# ************* Metodos y propiedades globales
+mousePoints = []
 
-
+def CallBackFunc(event, x, y, flags, param):
+    global mousePoints
+    if event == cv.EVENT_LBUTTONDOWN and len(mousePoints) < 2:
+        print 'append? x:' + str(x) + ' y:' + str(y) + ' -- press y: Yes'
+        key = cv.waitKey(0)
+        if key == ord("y"):
+            pos = Possition(x,y)
+            mousePoints.append(pos)
+            print 'Point appended'
+            
+            if len(mousePoints) == 2:
+                print 'Route fixed!'
+        else:
+            print 'Point discarded'
 
 #--------PRUEBAS UNITARIAS---------
 n = Node(5,5,0,0)
@@ -216,6 +233,7 @@ for node in alg.closedList:
 besNode = alg.getBestNodeFromOpenList()
 print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)
 
+cv.setMouseCallback("Window", CallBackFunc)
 cv.waitKey(0)
 cv.destroyAllWindows()
 print 'Fin del programa'
