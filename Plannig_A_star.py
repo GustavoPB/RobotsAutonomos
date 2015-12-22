@@ -174,6 +174,10 @@ def CallBackFunc(event, x, y, flags, param):
         else:
             print 'Point discarded'
 
+def DrawFilledCircle(image, center):
+    cv.circle(image, (center.x, center.y), 3, ( 0, 0, 255 ), -1)
+
+
 #--------PRUEBAS UNITARIAS---------
 n = Node(5,5,0,0)
 
@@ -234,6 +238,11 @@ besNode = alg.getBestNodeFromOpenList()
 print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)
 
 cv.setMouseCallback("Window", CallBackFunc)
+cv.waitKey(0)
+print 'Drawing points of route'
+DrawFilledCircle(alg.map, mousePoints[0])
+DrawFilledCircle(alg.map, mousePoints[1])
+alg.PrintMap()
 cv.waitKey(0)
 cv.destroyAllWindows()
 print 'Fin del programa'
