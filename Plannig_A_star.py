@@ -63,6 +63,11 @@ class Algorithm(object):
         self.endNode = Node(0,0,0,0)
         self.closedList = [] #almacenara los nodos elegidos para exploracion
         self.openList = [] #almacenara los nodos explorados pendientes de eleccion
+        self.map = cv.imread('crea3.jpg')
+        self.PrintMap()
+    
+    def PrintMap(self):
+        cv.imshow("Window", self.map)
     
     def setStartingNode(self, node):
         self.startNode = node
@@ -107,9 +112,22 @@ class Algorithm(object):
         targetNode.setFitness()
         self.openList.append(targetNode)
 
+    def getNonWallNodePossitions(self, nodePosCollection):
+        wallNodes = []
+        for nodePos in nodePosCollection:
+            pixelColor = self.map[nodePos.x, nodePos.y]
+            result = True if (pixelColor == 255).all() else False
+            if result == False: #no es blanco
+                wallNodes.append(nodePos)
+        for node in wallNodes:
+            nodePosCollection.remove(node)
+        return nodePosCollection
+
     def Explore(self, fromNode):
         exploredNode = self.CloseNode(fromNode) #ToReview
         neighbours = exploredNode.getNeighbours()
+        
+        neighbours = self.getNonWallNodePossitions(neighbours)#eliminamos items en muros
 
         for neighbour in neighbours:
             check, node = self.isNodeInOpenList(neighbour)
@@ -130,7 +148,7 @@ class Algorithm(object):
 
     def getBestNodeFromOpenList(self):
         bestNode = Node(0,0,0,0)
-        bestNode.fitness = 50000000
+        bestNode.fitness = float("inf")
         for node in self.openList:
             if node.fitness < bestNode.fitness:
                 bestNode = node
@@ -139,7 +157,7 @@ class Algorithm(object):
 
 
 
-
+#--------PRUEBAS UNITARIAS---------
 n = Node(5,5,0,0)
 
 m = n.getNeighbours() #Prueba
@@ -197,6 +215,10 @@ for node in alg.closedList:
 
 besNode = alg.getBestNodeFromOpenList()
 print str(besNode.pos.x) + ' ' + str(besNode.pos.y) + ' ' + str(besNode.isClosed)
+
+cv.waitKey(0)
+cv.destroyAllWindows()
+print 'Fin del programa'
 
 
 
